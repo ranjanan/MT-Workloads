@@ -1,5 +1,5 @@
 ## Basic RBC model with full depreciation
-
+using Base.Threads
 # Original code by Jesus Fernandez-Villaverde
 
 function main()
@@ -55,7 +55,7 @@ function main()
     while(maxDifference > tolerance)
         expectedValueFunction = mValueFunction*mTransition';
 
-      @threads all  for nProductivity = 1:nGridProductivity
+      @threads all for nProductivity = 1:nGridProductivity
         
             # We start from previous choice (monotonicity of policy function)
             gridCapitalNextPeriod = 1
