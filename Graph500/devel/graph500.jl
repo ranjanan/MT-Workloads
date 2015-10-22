@@ -16,12 +16,12 @@ function graph500(scale=14, edgefactor=16, num_bfs=64)
     println("Graph 500 (naive Julia version)")
 
     println("Using Kronecker generator to build edge list...")
-    v1, v2 = kronecker(scale, edgefactor)
+    @time v1, v2 = kronecker(scale, edgefactor)
     println("...done.")
 
     println("Building graph...")
     tic()
-    G = makegraph(v1, v2)
+    @time G = makegraph(v1, v2)
 	@show size(G), nnz(G)
     k1_time = toq()
     println("...done.")
@@ -33,34 +33,45 @@ function graph500(scale=14, edgefactor=16, num_bfs=64)
     search = search[1:num_bfs]
 
     k2_times = zeros(num_bfs)
+    find_time = zeros(num_bfs)
+    assign_time = zeros(num_bfs)
+    assign2_time = zeros(num_bfs)
+    filter_time = zeros(num_bfs)
+    update_time = zeros(num_bfs)
     k2_nedges = zeros(num_bfs)
     indeg = hist([v1; v2], 1:N+1)[2]
 
     println("Running BFSs...")
     run_bfs = 1
-    @threads all for k = 1:num_bfs
+	t1 = 0
+	t2 = 0
+    for k = 1:num_bfs
         # ensure degree of search key > 0
+		tic()
         if length(find(G[:, search[k]])) == 0
-            println(@sprintf("(discarding %d)", search[k]))
+            #println(@sprintf("(discarding %d)", search[k]))
             continue
         end
+		t1 += toq()
 
         # time BFS for this search key
         tic()
-        parents = bfs(G, search[k])
+        parents, find_time[run_bfs], filter_time[run_bfs], assign_time[run_bfs], assign2_time[run_bfs], update_time[run_bfs] = bfs(G, search[k])
         k2_times[run_bfs] = toq()
 
+		tic()
         ok = validate(parents, v1, v2, search[k])
         if ok <= 0
             error(@sprintf("BFS %d from search key %d failed to validate: %d",
                            k, search[k], ok))
         end
+		t2 += toq()
 
         k2_nedges[run_bfs] = sum(indeg[parents .>= 0]) / 2
-        println(run_bfs)
-        println(search[k])
-        println(k2_times[run_bfs])
-        println(k2_nedges[run_bfs])
+        #println(run_bfs)
+        #println(search[k])
+        #println(k2_times[run_bfs])
+        #println(k2_nedges[run_bfs])
         run_bfs += 1
     end
     println("...done.\n")
@@ -68,7 +79,15 @@ function graph500(scale=14, edgefactor=16, num_bfs=64)
     splice!(k2_nedges, run_bfs:num_bfs)
     run_bfs -= 1
 
+	println("Time for find : $t1")
+	println("Time for validate : $t2")
+	@show sum(k2_times)
+	@show sum(find_time)
+	@show sum(filter_time)
+	@show sum(assign_time)
+	@show sum(assign2_time)
+	@show sum(update_time)
     println("Output:")
-    output(scale, edgefactor, run_bfs, k1_time, k2_times, k2_nedges)
+ #   output(scale, edgefactor, run_bfs, k1_time, k2_times, k2_nedges)
 end
 
