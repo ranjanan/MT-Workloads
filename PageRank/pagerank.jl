@@ -52,11 +52,7 @@ function pageRankGenerator(At, numLinks, ln, alpha = 0.85, convergence = 0.0001,
 				oneAv = alpha * sum(iOld[ln]) / N
 			end
 			h = zeros(N)
-			s = SpinLock()
 			@threads all for i = 1:N
-				#lock!(s)
-				#page = At[i]
-				#unlock!(s)
 				#h = 0
 				if size(At[i],1) > 0
 					#h = alpha * dot(iOld[page], (1 ./ numLinks[page]))
@@ -65,7 +61,7 @@ function pageRankGenerator(At, numLinks, ln, alpha = 0.85, convergence = 0.0001,
 				end
 				#iNew[i] = h + oneAv + oneIv
 			end
-				iNew = h + oneAv + oneIv
+			iNew = h + oneAv + oneIv
 		end
 		diff = sum(abs(iNew - iOld))
 		done = diff < convergence
