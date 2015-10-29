@@ -1,9 +1,12 @@
 function main()
 	
+	@time begin 
 	A = readdlm("./data/ml-100k/u1.base",'\t';header=false)
 	T = readdlm("./data/ml-100k/u1.test",'\t';header=false)
 	I = readdlm("./data/movies.csv",',';header=false)
-
+	end
+	
+	@time begin 
 	#The format is userId , movieId , rating
 	userCol = round(Int, A[:,1])
 	movieCol = round(Int, A[:,2])
@@ -71,9 +74,9 @@ function main()
 
 	#fix me
 	noIters=30
-
+	end
 	#The Alternate Least Squares(ALS)
-	for i = 1:noIters
+	@time for i = 1:noIters
 
 		#Preallocation for movies
 		M_u = Array(Array{Float64,2}, n_u)
