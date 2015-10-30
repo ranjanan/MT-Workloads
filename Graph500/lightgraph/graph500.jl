@@ -38,10 +38,10 @@ function graph500(scale=14, edgefactor=16, num_bfs=64)
 
     println("Running BFSs...")
     run_bfs = 1
-    for k = 1:num_bfs
+    @time for k = 1:num_bfs
         # ensure degree of search key > 0
         if length(find(G[:, search[k]])) == 0
-            println(@sprintf("(discarding %d)", search[k]))
+            #println(@sprintf("(discarding %d)", search[k]))
             continue
         end
 
@@ -57,10 +57,10 @@ function graph500(scale=14, edgefactor=16, num_bfs=64)
         end
 
         k2_nedges[run_bfs] = sum(indeg[parents .>= 0]) / 2
-        println(run_bfs)
-        println(search[k])
-        println(k2_times[run_bfs])
-        println(k2_nedges[run_bfs])
+        #println(run_bfs)
+        #println(search[k])
+        #println(k2_times[run_bfs])
+        #println(k2_nedges[run_bfs])
         run_bfs += 1
     end
     println("...done.\n")
@@ -69,6 +69,6 @@ function graph500(scale=14, edgefactor=16, num_bfs=64)
     run_bfs -= 1
 
     println("Output:")
-    output(scale, edgefactor, run_bfs, k1_time, k2_times, k2_nedges)
+    #output(scale, edgefactor, run_bfs, k1_time, k2_times, k2_nedges)
 end
 
