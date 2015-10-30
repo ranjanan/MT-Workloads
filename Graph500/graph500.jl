@@ -38,9 +38,9 @@ function graph500(scale=14, edgefactor=16, num_bfs=64)
 
     println("Running BFSs...")
     run_bfs = 1
-    for k = 1:num_bfs
+    @threads all for k = 1:num_bfs
         # ensure degree of search key > 0
-        if length((G[:, search[k]]).nzind) == 0
+        if length(find(G[:, search[k]])) == 0
             println(@sprintf("(discarding %d)", search[k]))
             continue
         end

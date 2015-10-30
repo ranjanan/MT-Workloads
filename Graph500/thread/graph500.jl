@@ -38,37 +38,37 @@ function graph500(scale=14, edgefactor=16, num_bfs=64)
 
     println("Running BFSs...")
     run_bfs = 1
-    for k = 1:num_bfs
+    @threads all for k = 1:num_bfs
         # ensure degree of search key > 0
         if length((G[:, search[k]]).nzind) == 0
-            println(@sprintf("(discarding %d)", search[k]))
+            #println(@sprintf("(discarding %d)", search[k]))
             continue
         end
 
         # time BFS for this search key
-        tic()
+        #tic()
         parents = bfs(G, search[k])
-        k2_times[run_bfs] = toq()
+        #k2_times[run_bfs] = toq()
 
         ok = validate(parents, v1, v2, search[k])
         if ok <= 0
-            error(@sprintf("BFS %d from search key %d failed to validate: %d",
-                           k, search[k], ok))
+         #   error(@sprintf("BFS %d from search key %d failed to validate: %d",
+          #                 k, search[k], ok))
         end
 
-        k2_nedges[run_bfs] = sum(indeg[parents .>= 0]) / 2
-        println(run_bfs)
-        println(search[k])
-        println(k2_times[run_bfs])
-        println(k2_nedges[run_bfs])
-        run_bfs += 1
+        #k2_nedges[run_bfs] = sum(indeg[parents .>= 0]) / 2
+        #println(run_bfs)
+        #println(search[k])
+        #println(k2_times[run_bfs])
+        #println(k2_nedges[run_bfs])
+        #run_bfs += 1
     end
     println("...done.\n")
-    splice!(k2_times, run_bfs:num_bfs)
-    splice!(k2_nedges, run_bfs:num_bfs)
-    run_bfs -= 1
+    #splice!(k2_times, run_bfs:num_bfs)
+    #splice!(k2_nedges, run_bfs:num_bfs)
+    #run_bfs -= 1
 
     println("Output:")
-    output(scale, edgefactor, run_bfs, k1_time, k2_times, k2_nedges)
+    #output(scale, edgefactor, run_bfs, k1_time, k2_times, k2_nedges)
 end
 

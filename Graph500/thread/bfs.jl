@@ -15,7 +15,6 @@ function bfs(G, root)
     # vertex list to visit
     vlist = zeros(Int64, N)
     vlist[1] = root
-    rowval = G.rowval
 
     lastk = 1
     for k = 1:N
@@ -24,18 +23,18 @@ function bfs(G, root)
             break
         end
 
-        # loop through end vertices for this start vertex
-        for nz in nzrange(G, v)
-            i = rowval[nz]
-            # filter out visited vertices
-            if parents[i] == 0
-                # set the parent for all these end vertices
-                parents[i] = v
-                lastk += 1
-                # have to visit all these end vertices
-                vlist[lastk] = i
-            end
-        end
+        # get a vector of end vertices for this start vertex
+        I = (G[:, v]).nzind
+
+        # filter out visited vertices
+        nxt = filter((x) -> parents[x] == 0, I)    
+
+        # set the parent for all these end vertices
+        parents[nxt] = v
+
+        # have to visit all these end vertices
+        vlist[lastk + (1:length(nxt))] = nxt
+        lastk += length(nxt)
     end
     return parents
 end
