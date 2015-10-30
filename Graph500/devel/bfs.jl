@@ -44,11 +44,11 @@ function bfs(G, root)
 
         # get a vector of end vertices for this start vertex
 		tic()
-        I = find(G[:, v])
-		#vec[v] = 1 
-		#vd = CudaArray(vec)
-		#I = find(to_host(Gd * vd))
-		#vec[root] = 0
+        #I = find(G[:, v])
+		vec[v] = 1 
+		vd = CudaArray(vec)
+		I = find(to_host(Gd * vd))
+		vec[root] = 0
 		t1+= toq()
 
         # filter out visited vertices

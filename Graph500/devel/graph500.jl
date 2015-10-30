@@ -62,11 +62,11 @@ function graph500(scale=14, edgefactor=16, num_bfs=64)
         k2_times[run_bfs] = toq()
 
 		tic()
-        ok = validate(parents, v1, v2, search[k])
-        if ok <= 0
-            error(@sprintf("BFS %d from search key %d failed to validate: %d",
-                           k, search[k], ok))
-        end
+        #ok = validate(parents, v1, v2, search[k])
+        #if ok <= 0
+         #   error(@sprintf("BFS %d from search key %d failed to validate: %d",
+         #                  k, search[k], ok))
+        #end
 		t2 += toq()
 
         k2_nedges[run_bfs] = sum(indeg[parents .>= 0]) / 2
@@ -76,6 +76,7 @@ function graph500(scale=14, edgefactor=16, num_bfs=64)
         #println(k2_nedges[run_bfs])
         run_bfs += 1
     end
+
     println("...done.\n")
     splice!(k2_times, run_bfs:num_bfs)
     splice!(k2_nedges, run_bfs:num_bfs)
