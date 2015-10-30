@@ -10,6 +10,7 @@ include("makegraph.jl")
 include("bfs.jl")
 include("validate.jl")
 include("output.jl")
+include("gen_and_validate.jl")
 
 
 function graph500(scale=14, edgefactor=16, num_bfs=64)
@@ -44,19 +45,7 @@ function graph500(scale=14, edgefactor=16, num_bfs=64)
             #println(@sprintf("(discarding %d)", search[k]))
             continue
         end
-
-        # time BFS for this search key
-        tic()
-        parents = bfs(G, search[k])
-        k2_times[run_bfs] = toq()
-
-        ok = validate(parents, v1, v2, search[k])
-        if ok <= 0
-            error(@sprintf("BFS %d from search key %d failed to validate: %d",
-                           k, search[k], ok))
-        end
-
-        k2_nedges[run_bfs] = sum(indeg[parents .>= 0]) / 2
+		gen_and_validate(G, k)
         #println(run_bfs)
         #println(search[k])
         #println(k2_times[run_bfs])
@@ -64,11 +53,11 @@ function graph500(scale=14, edgefactor=16, num_bfs=64)
         run_bfs += 1
     end
     println("...done.\n")
-    splice!(k2_times, run_bfs:num_bfs)
-    splice!(k2_nedges, run_bfs:num_bfs)
+    #splice!(k2_times, run_bfs:num_bfs)
+    #splice!(k2_nedges, run_bfs:num_bfs)
     run_bfs -= 1
 
-    println("Output:")
+   # println("Output:")
     #output(scale, edgefactor, run_bfs, k1_time, k2_times, k2_nedges)
 end
 
