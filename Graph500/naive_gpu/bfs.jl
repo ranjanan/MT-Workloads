@@ -4,7 +4,7 @@
 # tree for the given root from the given graph.
 #
 # 2014.02.05    kiran.pamnany        Initial code
-
+include("funk.jl")
 
 function bfs(G, root)
 	#tic()
@@ -34,41 +34,44 @@ function bfs(G, root)
 	#t4 = 0
 	#t5 = 0
 	#t6 = 0
+	vec[1] = 1 
+	vd = CudaArray(vec)
 	for k = 1:N
 		#tic()
-        v = vlist[k]
-        if v == 0
-            break
-        end
+        #v = vlist[k]
+        #if v == 0
+        #    break
+        #end
 		#t6 += toq()
 
         # get a vector of end vertices for this start vertex
-		tic()
+		#tic()
         #I = find(G[:, v])
-		vec[v] = 1 
-		vd = CudaArray(vec)
-		I = find(to_host(Gd * vd))
-		vec[root] = 0
-		t1+= toq()
+		#vec[v] = 1 
+		#vd = CudaArray(vec)
+		#I = find(to_host(Gd * vd))
+		Gd * vd
+		#vec[root] = 0
+		#t1+= toq()
 
         # filter out visited vertices
 		#tic()
-        nxt = filter((x) -> parents[x] == 0, I)    
+        #nxt = filter((x) -> parents[x] == 0, I)    
 		#t2 += toq()
 
         # set the parent for all these end vertices
 		#tic()
-        parents[nxt] = v
+        #parents[nxt] = v
 		#t3 += toq()		
 
         # have to visit all these end vertices
 		#tic()
-        vlist[lastk + (1:length(nxt))] = nxt
+        #vlist[lastk + (1:length(nxt))] = nxt
 		#t4 += toq()
 
 		#tic()
-        lastk += length(nxt)
+        #lastk += length(nxt)
 		#t5 += toq()
     end
-    return parents, t1#, t2, t3, t4 , t5, t6, t7 
+    return parents#, t1#, t2, t3, t4 , t5, t6, t7 
 end

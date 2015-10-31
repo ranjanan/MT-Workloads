@@ -47,7 +47,7 @@ function graph500(scale=14, edgefactor=16, num_bfs=64)
     run_bfs = 1
 	t1 = 0
 	t2 = 0
-    for k = 1:num_bfs
+    @time for k = 1:num_bfs
         # ensure degree of search key > 0
 		tic()
         if length(find(G[:, search[k]])) == 0
@@ -58,7 +58,7 @@ function graph500(scale=14, edgefactor=16, num_bfs=64)
 
         # time BFS for this search key
         tic()
-        parents, find_time[run_bfs] = bfs(G, search[k])
+        parents  = bfs(G, search[k])
         k2_times[run_bfs] = toq()
 
 		tic()
@@ -82,10 +82,10 @@ function graph500(scale=14, edgefactor=16, num_bfs=64)
     splice!(k2_nedges, run_bfs:num_bfs)
     run_bfs -= 1
 
-	println("Time for find : $t1")
-	println("Time for validate : $t2")
-	@show sum(k2_times)
-	@show sum(find_time)
+	#println("Time for find : $t1")
+	#println("Time for validate : $t2")
+	#@show sum(k2_times)
+	#@show sum(find_time)
 	#@show sum(filter_time)
 	#@show sum(assign_time)
 	#@show sum(assign2_time)
