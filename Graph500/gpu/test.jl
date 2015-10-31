@@ -1,8 +1,7 @@
-include("graph500.jl")
-include("/home/ubuntu/gunrocktest.jl")
-function test()
-	scale = 18
-	edgefactor = 18
+include("bfs.jl")
+include("validate.jl")
+include("gen_and_validate.jl")
+function test(scale, edgefactor)
     v1, v2 = kronecker(scale, edgefactor)
     G = makegraph(v1, v2)
 	@time begin

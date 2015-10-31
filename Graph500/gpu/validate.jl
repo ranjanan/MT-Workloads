@@ -54,5 +54,5 @@ function validate(parents, v1, v2, search_key)
         return -5
     end
 
-    return 1
+    return 1, level
 end
