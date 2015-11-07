@@ -45,7 +45,11 @@ function graph500(scale=14, edgefactor=16, num_bfs=64)
             #println(@sprintf("(discarding %d)", search[k]))
             continue
         end
-		gen_and_validate(G, k)
+		#ok = gen_and_validate(G, k, v1, v2)
+		#if ok <=0
+		#	error("BFS failed to validate at key $k")
+		#end
+		gen_label(G,k)
         #println(run_bfs)
         #println(search[k])
         #println(k2_times[run_bfs])
