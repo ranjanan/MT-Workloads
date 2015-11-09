@@ -27,6 +27,14 @@ function graph500(scale=14, edgefactor=16, num_bfs=64)
     k1_time = toq()
     println("...done.")
 	#return
+	#preallocation 
+	rows = G.colptr - 1
+	cols = G.rowval - 1
+	nodes = length(rows) - 1
+	edges = length(cols)
+	rows = map(Int32, rows)
+	cols = map(Int32, cols)
+	bfs_label = Array(Int32, nodes)
 
     # generate requested # of random search keys
     N = size(G, 1)
@@ -39,17 +47,21 @@ function graph500(scale=14, edgefactor=16, num_bfs=64)
 
     println("Running BFSs...")
     run_bfs = 1
+	t1 = 0
+	t2 = 0
+	t31 = 0
+	t32 = 0
     @time for k = 1:num_bfs
         # ensure degree of search key > 0
         if length(find(G[:, search[k]])) == 0
             #println(@sprintf("(discarding %d)", search[k]))
             continue
         end
-		#ok = gen_and_validate(G, k, v1, v2)
-		#if ok <=0
-		#	error("BFS failed to validate at key $k")
-		#end
-		gen_label(G,k)
+		ok, t1, t2, t31, t32 = gen_and_validate(G, k, v1, v2, rows, cols, nodes, edges, bfs_label, t1, t2, t31, t32)
+		if ok <=0
+			error("BFS failed to validate at key $k")
+		end
+		#gen_label(G,k)
         #println(run_bfs)
         #println(search[k])
         #println(k2_times[run_bfs])
@@ -60,7 +72,10 @@ function graph500(scale=14, edgefactor=16, num_bfs=64)
     #splice!(k2_times, run_bfs:num_bfs)
     #splice!(k2_nedges, run_bfs:num_bfs)
     run_bfs -= 1
-
+	println("t1 = $t1")
+	println("t2 = $t2")
+	println("t31 = $t31")
+	println("t32 = $t32")
    # println("Output:")
     #output(scale, edgefactor, run_bfs, k1_time, k2_times, k2_nedges)
 end
