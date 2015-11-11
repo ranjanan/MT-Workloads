@@ -14,7 +14,7 @@ include("gen_and_validate.jl")
 
 
 function graph500(scale=14, edgefactor=16, num_bfs=64)
-    println("Graph 500 (naive Julia version)")
+    println("Graph 500 (GPU Julia version)")
 
     println("Using Kronecker generator to build edge list...")
     v1, v2 = kronecker(scale, edgefactor)
@@ -35,10 +35,10 @@ function graph500(scale=14, edgefactor=16, num_bfs=64)
 	rows = map(Int32, rows)
 	cols = map(Int32, cols)
 	bfs_label = Array(Int32, nodes)
-	lv1 = Array(Int64, size(v1, 1))
+	#=lv1 = Array(Int64, size(v1, 1))
 	lv2 = Array(Int64, size(v2, 1))
 	neither_in = BitArray(size(v1,1)) 
-	both_in = BitArray(size(v1,1)) 
+	both_in = BitArray(size(v1,1)) =#
 
     # generate requested # of random search keys
     N = size(G, 1)
@@ -53,16 +53,13 @@ function graph500(scale=14, edgefactor=16, num_bfs=64)
     run_bfs = 1
 	t1 = 0
 	t2 = 0
-	t31 = 0
-	t321 = 0
-	t322 = 0
     @time for k = 1:num_bfs
         # ensure degree of search key > 0
         #if length((G[:, search[k]]).nzind) == 0
             #println(@sprintf("(discarding %d)", search[k]))
          #   continue
         #end
-		ok, t1, t2, t31, t321, t322 = gen_and_validate(G, k, v1, v2, rows, cols, nodes, edges, bfs_label, lv1, lv2, neither_in, both_in, t1, t2, t31, t321, t322)
+		ok, t1, t2 = gen_and_validate(G, k, v1, v2, rows, cols, nodes, edges, bfs_label, t1, t2) 
 		if ok <=0
 			error("BFS failed to validate at key $k")
 		end
@@ -77,11 +74,8 @@ function graph500(scale=14, edgefactor=16, num_bfs=64)
     #splice!(k2_times, run_bfs:num_bfs)
     #splice!(k2_nedges, run_bfs:num_bfs)
     run_bfs -= 1
-	println("t1 = $t1")
-	println("t2 = $t2")
-	println("t31 = $t31")
-	println("t321 = $t321")
-	println("t322 = $t322")
+	println("Time for generating tree and level =  $(t1)")
+	println("Time for validation  = $(t2)")
    # println("Output:")
     #output(scale, edgefactor, run_bfs, k1_time, k2_times, k2_nedges)
 end

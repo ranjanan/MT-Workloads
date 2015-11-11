@@ -13,7 +13,7 @@ include("output.jl")
 
 
 function graph500(scale=14, edgefactor=16, num_bfs=64)
-    println("Graph 500 (naive Julia version)")
+    println("Graph 500 (CPU Julia version)")
 
     println("Using Kronecker generator to build edge list...")
     v1, v2 = kronecker(scale, edgefactor)
@@ -38,6 +38,8 @@ function graph500(scale=14, edgefactor=16, num_bfs=64)
 
     println("Running BFSs...")
     run_bfs = 1
+	t1 = 0
+	t2 = 0
     @time for k = 1:num_bfs
         # ensure degree of search key > 0
         if length(find(G[:, search[k]])) == 0
@@ -50,7 +52,7 @@ function graph500(scale=14, edgefactor=16, num_bfs=64)
         parents = bfs(G, search[k])
         k2_times[run_bfs] = toq()
 
-        ok = validate(parents, v1, v2, search[k])
+        ok, t1, t2 = validate(parents, v1, v2, search[k], t1, t2)
         if ok <= 0
             error(@sprintf("BFS %d from search key %d failed to validate: %d",
                            k, search[k], ok))
@@ -69,7 +71,9 @@ function graph500(scale=14, edgefactor=16, num_bfs=64)
     run_bfs -= 1
 
 	@show sum(k2_times)
-    println("Output:")
+	println("Time for generating tree and level =  $(sum(k2_times) + t1)")
+	println("Time for validation  = $(t2)")
+    #println("Output:")
     #output(scale, edgefactor, run_bfs, k1_time, k2_times, k2_nedges)
 end
 

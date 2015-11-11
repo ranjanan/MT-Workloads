@@ -5,7 +5,8 @@
 # 2014.02.05    kiran.pamnany        Initial code
 
 
-function validate(parents, v1, v2, search_key)
+function validate(parents, v1, v2, search_key, t1, t2)
+	tic()
     if parents[search_key] != search_key
         return 0
     end
@@ -40,7 +41,8 @@ function validate(parents, v1, v2, search_key)
             return -3
         end
     end
-
+	t1 += toq()
+	tic()
     lv1 = level[v1]
     lv2 = level[v2]
 
@@ -53,6 +55,6 @@ function validate(parents, v1, v2, search_key)
     if any(!(neither_in | respects_tree_level))
         return -5
     end
-
-    return 1
+	t2 += toq()
+    return 1, t1, t2
 end
