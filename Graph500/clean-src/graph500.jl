@@ -75,5 +75,11 @@ function graph500(scale=14, edgefactor=16, num_bfs=64)
 	println("Time for validation  = $(t2)")
     #println("Output:")
     #output(scale, edgefactor, run_bfs, k1_time, k2_times, k2_nedges)
+	
+    TEPS = k2_nedges ./ k2_times
+    N = length(TEPS)
+    tmp = 1.0./TEPS
+    hmean = N/sum(tmp)
+    @printf("harmonic_mean_TEPS: %20.17e\n", hmean)
 end
 
