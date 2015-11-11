@@ -6,8 +6,7 @@
 # 2014.02.05    kiran.pamnany        Initial code
 
 
-@debug function bfs(G, root)
-	@bp
+function bfs(G, root)
     # BFS parent information (per-vertex)
     N = size(G, 1)
     parents = zeros(Int64, N)
