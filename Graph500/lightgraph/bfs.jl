@@ -7,7 +7,7 @@
 include("bfs_hack.jl")
 
 function bfs(G, root)
-	G = Graph(G)
+	#G = Graph(G)
 	parents = bfs_gen(G, root)
     return parents
 end

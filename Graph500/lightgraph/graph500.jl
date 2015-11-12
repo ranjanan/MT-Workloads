@@ -10,7 +10,7 @@ include("makegraph.jl")
 include("bfs.jl")
 include("validate.jl")
 include("output.jl")
-
+using LightGraphs
 
 function graph500(scale=14, edgefactor=16, num_bfs=64)
     println("Graph 500 (naive Julia version)")
@@ -23,8 +23,10 @@ function graph500(scale=14, edgefactor=16, num_bfs=64)
     tic()
     G = makegraph(v1, v2)
 	@show size(G), nnz(G)
+	G = Graph(G)
     k1_time = toq()
     println("...done.")
+	@show k1_time 
 	#return
 
     # generate requested # of random search keys
@@ -40,7 +42,7 @@ function graph500(scale=14, edgefactor=16, num_bfs=64)
     run_bfs = 1
     @time for k = 1:num_bfs
         # ensure degree of search key > 0
-        if length(find(G[:, search[k]])) == 0
+        if length(neighbors(G, k)) == 0 
             #println(@sprintf("(discarding %d)", search[k]))
             continue
         end
