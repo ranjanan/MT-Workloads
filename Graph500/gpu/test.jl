@@ -1,23 +1,32 @@
 include("bfs.jl")
+include("kronecker.jl")
 include("validate.jl")
 include("gen_and_validate.jl")
 function test(scale, edgefactor)
     v1, v2 = kronecker(scale, edgefactor)
     G = makegraph(v1, v2)
-	@time begin
+	#@time begin
 	parents = bfs(G, 2)
 	ok, level1 = validate(parents, v1, v2, 2)
-	end
+	#end
+	rows = G.colptr - 1
+	cols = G.rowval - 1
+	nodes = length(rows) - 1
+	edges = length(cols)
+	rows = map(Int32, rows)
+	cols = map(Int32, cols)
+	bfs_label = Array(Int32, nodes)
 	@time begin 
-	level2 = gen_label(G, 2)
+	#level2 = gen_label(G, 2)
+	gen_label!(S, 2, rows, cols, nodes, edges, bfs_label)
 	#level2 += 1
-	for i = 1:size(level2, 1)
-		if level2[i] >  100000
-			level2[i] = 0
+	for i = 1:size(bfs_label, 1)
+		if bfs_label[i] >  100000
+			bfs_label[i] = 0
 		end
 	end
 	end
 	#@show level1
-	#@show level2
-	level1, level2
+#@show level2
+	parents, level1, bfs_label
 end
