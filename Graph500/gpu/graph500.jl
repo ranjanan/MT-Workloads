@@ -7,10 +7,9 @@
 
 include("kronecker.jl")
 include("makegraph.jl")
-include("bfs.jl")
+include("bfs_gpu.jl")
 include("validate.jl")
 include("output.jl")
-include("gen_and_validate.jl")
 
 
 function graph500(scale=14, edgefactor=16, num_bfs=64)
@@ -35,10 +34,6 @@ function graph500(scale=14, edgefactor=16, num_bfs=64)
 	rows = map(Int32, rows)
 	cols = map(Int32, cols)
 	bfs_label = Array(Int32, nodes)
-	#=lv1 = Array(Int64, size(v1, 1))
-	lv2 = Array(Int64, size(v2, 1))
-	neither_in = BitArray(size(v1,1)) 
-	both_in = BitArray(size(v1,1)) =#
 
     # generate requested # of random search keys
     N = size(G, 1)
@@ -59,10 +54,15 @@ function graph500(scale=14, edgefactor=16, num_bfs=64)
             #println(@sprintf("(discarding %d)", search[k]))
          #   continue
         #end
-		ok, t1, t2 = gen_and_validate(G, k, v1, v2, rows, cols, nodes, edges, bfs_label, t1, t2) 
+		tic()
+		parents = gen_parents(G, k, rows, cols, nodes, edges, bfs_label)
+		k2_times[run_bfs] = toq()
+		#ok, t1, t2 = gen_and_validate(G, k, v1, v2, rows, cols, nodes, edges, bfs_label, t1, t2) 
+		ok = validate(parents, v1, v2, k)
 		if ok <=0
 			error("BFS failed to validate at key $k")
 		end
+        k2_nedges[run_bfs] = sum(indeg[parents .>= -1]) / 2
 		#gen_label(G,k)
         #println(run_bfs)
         #println(search[k])
@@ -74,8 +74,14 @@ function graph500(scale=14, edgefactor=16, num_bfs=64)
     #splice!(k2_times, run_bfs:num_bfs)
     #splice!(k2_nedges, run_bfs:num_bfs)
     run_bfs -= 1
-	println("Time for generating tree and level =  $(t1)")
-	println("Time for validation  = $(t2)")
+	#println("Time for generating tree and level =  $(t1)")
+#	println("Time for validation  = $(t2)")
+	@show sum(k2_times)
+    TEPS = k2_nedges ./ k2_times
+    N = length(TEPS)
+    tmp = 1.0./TEPS
+    hmean = N/sum(tmp)
+    @printf("harmonic_mean_TEPS: %20.17e\n", hmean)
    # println("Output:")
     #output(scale, edgefactor, run_bfs, k1_time, k2_times, k2_nedges)
 end

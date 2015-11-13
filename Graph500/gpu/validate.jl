@@ -5,8 +5,7 @@
 # 2014.02.05    kiran.pamnany        Initial code
 
 
-@debug function validate(parents, v1, v2, search_key)
-	@bp
+function validate(parents, v1, v2, search_key)
     if parents[search_key] != search_key
         return 0
     end
@@ -56,5 +55,5 @@
         return -5
     end
 
-    return 1, level
+    return 1
 end
