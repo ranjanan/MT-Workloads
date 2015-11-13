@@ -67,6 +67,7 @@ function graph500(scale=14, edgefactor=16, num_bfs=64)
     splice!(k2_times, run_bfs:num_bfs)
     splice!(k2_nedges, run_bfs:num_bfs)
     run_bfs -= 1
+	@show sum(k2_times)
 
     println("Output:")
     #output(scale, edgefactor, run_bfs, k1_time, k2_times, k2_nedges)

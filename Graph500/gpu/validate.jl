@@ -5,14 +5,16 @@
 # 2014.02.05    kiran.pamnany        Initial code
 
 
-function validate(parents, v1, v2, search_key)
+@debug function validate(parents, v1, v2, search_key)
+	@bp
     if parents[search_key] != search_key
         return 0
     end
     N = max(maximum(v1), maximum(v2)) + 1
 
     # indices of all vertices in the tree
-    slice = find(parents)
+    #slice = find(parents)
+    slice = find(parents .> 0) 
 
     # vertices' level in the tree
     level = zeros(Int64, size(parents))

@@ -1,5 +1,5 @@
 function gen_label!(S, root, rows, cols, nodes, edges, bfs_label)
-	ccall((:bfs, "/home/ubuntu/gunrock/build/lib/libgunrock"), Void, (Ptr{Cint}, Int, Int, Ptr{Cint}, Ptr{Cint}, Int), bfs_label, nodes, edges, rows, cols, root - 1)
+	ccall((:bfs, "/home/ubuntu/gunrock2/build/lib/libgunrock"), Void, (Ptr{Cint}, Int, Int, Ptr{Cint}, Ptr{Cint}, Int), bfs_label, nodes, edges, rows, cols, root - 1)
 end
 
 function gen_and_validate(S, root, v1, v2, rows, cols, nodes, edges, level, t1, t2) 
