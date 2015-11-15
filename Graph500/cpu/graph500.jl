@@ -12,7 +12,7 @@ include("validate.jl")
 include("output.jl")
 
 
-function graph500_cpu(scale=14, edgefactor=16, num_bfs=64)
+function graph500(scale=14, edgefactor=16, num_bfs=64)
     println("Graph 500 (CPU Julia version)")
 
     println("Using Kronecker generator to build edge list...")
