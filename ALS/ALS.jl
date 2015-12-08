@@ -109,7 +109,7 @@ function main()
 		end
 
 		#Update M
-		@threads all for m = 1:n_m
+		@threads for m = 1:n_m
 			x = matrix_m[m] \ vector_m[m]
 			M[:,m] = x
 		 end
