@@ -9,7 +9,7 @@ a = tsqueue(a)
 
 for j = 1:1000
 	a = tsqueue(randperm(10))
-	@threads all for i = 1:10
+	@threads for i = 1:10
 		push!(a, threadid())
 	end
 	@test size(a,1) == 20

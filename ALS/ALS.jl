@@ -90,7 +90,7 @@ function main()
 		end
 
 		#Update U
-		@threads all for u = 1:n_u
+		@threads for u = 1:n_u
 			#x = matrix_u[u] \ vector_u[u]
 			#U[u,:] = x
 			U[u,:] = matrix_u[u] \ vector_u[u]
