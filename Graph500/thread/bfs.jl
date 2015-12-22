@@ -14,10 +14,10 @@ function bfs(G, root)
 
     # vertex list to visit
     #vlist = zeros(Int64, N)
-	vlist = Int[]
+    vlist = Int[]
     push!(vlist, root)
-	rowval = G.rowval
-	#vlist = tsqueue(vlist)
+    rowval = G.rowval
+    #vlist = tsqueue(vlist)
     s = SpinLock()
     @threads for k = 1:N
         lock!(s)
