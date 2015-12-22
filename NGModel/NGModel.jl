@@ -55,7 +55,7 @@ function main()
     while(maxDifference > tolerance)
         expectedValueFunction = mValueFunction*mTransition';
 
-      @threads for nProductivity = 1:nGridProductivity
+      for nProductivity = 1:nGridProductivity
         
             # We start from previous choice (monotonicity of policy function)
             gridCapitalNextPeriod = 1

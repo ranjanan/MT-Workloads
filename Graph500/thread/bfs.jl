@@ -4,7 +4,7 @@
 # tree for the given root from the given graph.
 #
 # 2014.02.05    kiran.pamnany        Initial code
-
+include("queue.jl")
 
 function bfs(G, root)
     # BFS parent information (per-vertex)
@@ -13,29 +13,33 @@ function bfs(G, root)
     parents[root] = root
 
     # vertex list to visit
-    vlist = zeros(Int64, N)
-    vlist[1] = root
+    #vlist = zeros(Int64, N)
+	vlist = Int[]
+    push!(vlist, root)
 	rowval = G.rowval
-
-    lastk = 1
-    for k = 1:N
-        v = vlist[k]
-        if v == 0
-            break
+	#vlist = tsqueue(vlist)
+    s = SpinLock()
+    @threads for k = 1:N
+        lock!(s)
+        try 
+            v = pop!(vlist)
+        finally 
+            unlock!(s)
         end
-
         # loop through end vertices for this start vertex
-        for nz in nzrange(G, v)
+        n = nzrange(G,v)
+        for nz in n
             i = rowval[nz]
             # filter out visited vertices
             if parents[i] == 0
                 # set the parent for all these end vertices
                 parents[i] = v
-                lastk += 1
-                # have to visit all these end vertices
-                vlist[lastk] = i
+                #push!(arr, i)
             end
         end
+        lock!(s)
+        append!(vlist, rowval[n])
+        unlock!(s)
     end
     return parents
 end
