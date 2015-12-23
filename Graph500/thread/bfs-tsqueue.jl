@@ -18,7 +18,6 @@ function bfs(G, root)
     push!(vlist, root)
 	rowval = G.rowval
 	vlist = tsqueue(vlist)
-    #s = SpinLock()
     @threads for k = 1:N
         v = pop!(vlist)
         # loop through end vertices for this start vertex

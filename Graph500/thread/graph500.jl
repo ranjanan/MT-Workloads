@@ -46,14 +46,14 @@ function graph500(scale=14, edgefactor=16, num_bfs=64)
         end
 
         # time BFS for this search key
-        #tic()
+        tic()
         parents = bfs(G, search[k])
-        #k2_times[run_bfs] = toq()
+        k2_times[run_bfs] = toq()
 
         ok = validate(parents, v1, v2, search[k])
         if ok <= 0
-         #   error(@sprintf("BFS %d from search key %d failed to validate: %d",
-          #                 k, search[k], ok))
+            error(@sprintf("BFS %d from search key %d failed to validate: %d",
+                           k, search[k], ok))
         end
 
         #k2_nedges[run_bfs] = sum(indeg[parents .>= 0]) / 2

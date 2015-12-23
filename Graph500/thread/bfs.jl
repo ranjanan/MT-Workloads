@@ -3,8 +3,8 @@
 # Kernel 2 from the Graph 500 specifications. Builds a BFS
 # tree for the given root from the given graph.
 #
-# 2014.02.05    kiran.pamnany        Initial code
-include("queue.jl")
+#include("queue.jl")
+using Base.Threads
 
 function bfs(G, root)
     # BFS parent information (per-vertex)
@@ -19,26 +19,53 @@ function bfs(G, root)
     rowval = G.rowval
     #vlist = tsqueue(vlist)
     s = SpinLock()
+    n = Array(UnitRange{Int64}, N)
+    arr = Array(Vector{Int}, N)
+    for i = 1:size(arr, 1)
+        arr[i] = Int[]
+    end
+    v = zeros(Int, N)
+    check = trues(N)
+    is_done = false
     @threads for k = 1:N
-        lock!(s)
-        try 
-            v = pop!(vlist)
-        finally 
-            unlock!(s)
+        while check[k] 
+            try 
+                lock!(s)
+                v[k] = splice!(vlist, 1) 
+            catch 
+                unlock!(s)
+                if is_done 
+                    break   
+                end
+                continue
+            finally 
+                unlock!(s)
+            end
+            check[k] = false
+        end
+        if is_done 
+            break   
         end
         # loop through end vertices for this start vertex
-        n = nzrange(G,v)
-        for nz in n
-            i = rowval[nz]
+        n[k] = nzrange(G,v[k])
+        for nz in n[k]
+            #i = rowval[nz]
             # filter out visited vertices
-            if parents[i] == 0
+            if parents[rowval[nz]] == 0
                 # set the parent for all these end vertices
-                parents[i] = v
-                #push!(arr, i)
+                lock!(s)
+                parents[rowval[nz]] = v[k]
+                unlock!(s)
+                push!(arr[k], rowval[nz])
             end
         end
+        if isempty(arr[k]) && isempty(vlist)
+            lock!(s)
+            is_done = true
+            unlock!(s)
+        end
         lock!(s)
-        append!(vlist, rowval[n])
+        append!(vlist, arr[k])
         unlock!(s)
     end
     return parents
