@@ -93,7 +93,7 @@ function main()
 
         iteration = iteration+1
         if mod(iteration,10)==0 || iteration == 1
-            println(" Iteration = ", iteration, " Sup Diff = ", maxDifference)
+            #println(" Iteration = ", iteration, " Sup Diff = ", maxDifference)
         end
            
     end
@@ -103,3 +103,4 @@ function main()
     println(" My check = ", mPolicyFunction[1000,3])
 
 end
+@time main()

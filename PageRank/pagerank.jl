@@ -1,3 +1,4 @@
+using Base.Threads
 function pageRank(linkMatrix, alpha = 0.85, convergence = 0.0001, checkSteps = 10)
 	incomingLinks, numLinks, leafNodes = transposeLinkMatrix(linkMatrix)
 	final = pageRankGenerator(incomingLinks, numLinks, leafNodes, alpha, convergence, checkSteps)
@@ -68,3 +69,5 @@ function pageRankGenerator(At, numLinks, ln, alpha = 0.85, convergence = 0.0001,
 	end
 	return iNew
 end
+@time API("web-Google.txt")
+
