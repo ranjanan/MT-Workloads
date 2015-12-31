@@ -74,3 +74,4 @@ function driver()
     println("Serial rate = ", iterations / tserial, " opts/sec")
     println("Parallel rate = ", iterations / tparallel, " opts/sec")
 end
+driver()
